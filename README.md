@@ -1,4 +1,4 @@
 # htmlspec
-HTML output generator for GoGiven
+[![Build status](https://travis-ci.org/corbym/htmlspec.svg?branch=master)](https://github.com/corbym/htmlspec)
 
-This is a support library for [GoGiven](https://github.com/corbym/gogiven)
+HTML output generator for the BDD framework [GoGiven](https://github.com/corbym/gogiven)
