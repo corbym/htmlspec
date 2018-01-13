@@ -43,7 +43,7 @@ var someMap = &base.SomeMap{"foo": base.NewSome(testingT,
 	"Generator Test",
 	base.NewTestMetaData("foo"),
 	"GivenWhenThen",
-	func(givens *testdata.InterestingGivens) {
+	func(givens testdata.InterestingGivens) {
 
 	}),
 }
