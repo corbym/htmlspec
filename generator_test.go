@@ -12,7 +12,7 @@ import (
 
 var rawContent string
 var html string
-var gen = new(htmlspec.TestOutputGenerator)
+var gen = htmlspec.NewTestOutputGenerator()
 
 func TestTestOutputGenerator_Generate(testing *testing.T) {
 	fileIsConvertedToHtml()

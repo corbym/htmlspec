@@ -16,6 +16,22 @@ const baseTemplateName = "base"
 // test.
 type TestOutputGenerator struct {
 	generator.GoGivensOutputGenerator
+	template *template.Template
+}
+
+func NewTestOutputGenerator() *TestOutputGenerator {
+	goPath := os.Getenv(goPathEnvKey)
+	generator := new(TestOutputGenerator)
+	generator.template = template.Must(template.ParseFiles(
+		filepath.Join(goPath, resourcesPath+"htmltemplate.gtl"),
+		filepath.Join(goPath, resourcesPath+"capturedio.gtl"),
+		filepath.Join(goPath, resourcesPath+"interestinggivens.gtl"),
+		filepath.Join(goPath, resourcesPath+"style.gtl"),
+		filepath.Join(goPath, resourcesPath+"test-body.gtl"),
+		filepath.Join(goPath, resourcesPath+"contents.gtl"),
+		filepath.Join(goPath, resourcesPath+"javascript.gtl"),
+	))
+	return generator
 }
 
 // FileExtension for the output generated.
@@ -26,18 +42,8 @@ func (generator *TestOutputGenerator) FileExtension() string {
 // Generate generates the default output for a test. The return string contains the html
 // that goes into the output file generated in gogivens.GenerateTestOutput()
 func (generator *TestOutputGenerator) Generate(pageData *generator.PageData) string {
-	goPath := os.Getenv(goPathEnvKey)
-	tmpl := template.Must(template.ParseFiles(
-		filepath.Join(goPath, resourcesPath+"htmltemplate.gtl"),
-		filepath.Join(goPath, resourcesPath+"capturedio.gtl"),
-		filepath.Join(goPath, resourcesPath+"interestinggivens.gtl"),
-		filepath.Join(goPath, resourcesPath+"style.gtl"),
-		filepath.Join(goPath, resourcesPath+"test-body.gtl"),
-		filepath.Join(goPath, resourcesPath+"contents.gtl"),
-		filepath.Join(goPath, resourcesPath+"javascript.gtl"),
-	))
 	var buffer = new(bytes.Buffer)
-	err := tmpl.ExecuteTemplate(buffer, baseTemplateName, pageData)
+	err := generator.template.ExecuteTemplate(buffer, baseTemplateName, pageData)
 	if err != nil {
 		panic(err.Error())
 	}
