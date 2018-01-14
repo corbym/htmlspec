@@ -12,17 +12,18 @@ const goPathEnvKey = "GOPATH"
 const resourcesPath = "src/github.com/corbym/htmlspec/resources/"
 const baseTemplateName = "base"
 
-//TestOutputGenerator is an implmentation of the GoGivensOutputGenerator that generates an html file per
-// test.
+//TestOutputGenerator is an implementation of the GoGivensOutputGenerator that generates an html file per
+// test. It is thread safe between goroutines.
 type TestOutputGenerator struct {
 	generator.GoGivensOutputGenerator
 	template *template.Template
 }
 
+//NewTestOutputGenerator creates a template that is used to generate the html output.
 func NewTestOutputGenerator() *TestOutputGenerator {
 	goPath := os.Getenv(goPathEnvKey)
-	generator := new(TestOutputGenerator)
-	generator.template = template.Must(template.ParseFiles(
+	outputGenerator := new(TestOutputGenerator)
+	outputGenerator.template = template.Must(template.ParseFiles(
 		filepath.Join(goPath, resourcesPath+"htmltemplate.gtl"),
 		filepath.Join(goPath, resourcesPath+"capturedio.gtl"),
 		filepath.Join(goPath, resourcesPath+"interestinggivens.gtl"),
@@ -31,19 +32,20 @@ func NewTestOutputGenerator() *TestOutputGenerator {
 		filepath.Join(goPath, resourcesPath+"contents.gtl"),
 		filepath.Join(goPath, resourcesPath+"javascript.gtl"),
 	))
-	return generator
+	return outputGenerator
 }
 
 // FileExtension for the output generated.
-func (generator *TestOutputGenerator) FileExtension() string {
+func (outputGenerator *TestOutputGenerator) FileExtension() string {
 	return ".html"
 }
 
-// Generate generates the default output for a test. The return string contains the html
-// that goes into the output file generated in gogivens.GenerateTestOutput()
-func (generator *TestOutputGenerator) Generate(pageData *generator.PageData) string {
+// Generate generates html output for a test. The return string contains the html
+// that goes into the output file generated in gogivens.GenerateTestOutput().
+// The function panics if the template cannot be generated.
+func (outputGenerator *TestOutputGenerator) Generate(pageData *generator.PageData) string {
 	var buffer = new(bytes.Buffer)
-	err := generator.template.ExecuteTemplate(buffer, baseTemplateName, pageData)
+	err := outputGenerator.template.ExecuteTemplate(buffer, baseTemplateName, pageData)
 	if err != nil {
 		panic(err.Error())
 	}
