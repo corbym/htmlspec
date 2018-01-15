@@ -25,8 +25,8 @@ func NewTestOutputGenerator() *TestOutputGenerator {
 	outputGenerator := new(TestOutputGenerator)
 	outputGenerator.template = template.Must(template.ParseFiles(
 		filepath.Join(goPath, resourcesPath+"htmltemplate.gtl"),
-		filepath.Join(goPath, resourcesPath+"capturedio.gtl"),
 		filepath.Join(goPath, resourcesPath+"interestinggivens.gtl"),
+		filepath.Join(goPath, resourcesPath+"capturedio.gtl"),
 		filepath.Join(goPath, resourcesPath+"style.gtl"),
 		filepath.Join(goPath, resourcesPath+"test-body.gtl"),
 		filepath.Join(goPath, resourcesPath+"contents.gtl"),

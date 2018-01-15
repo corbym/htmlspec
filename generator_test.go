@@ -27,6 +27,10 @@ func TestTestOutputGenerator_Generate(testing *testing.T) {
 	AssertThat(testing, html, is.ValueContaining("When"))
 	AssertThat(testing, html, is.ValueContaining("Then"))
 	AssertThat(testing, html, is.ValueContaining("</pre>"))
+	AssertThat(testing, html, is.ValueContaining(`logkey="foob">`))
+	AssertThat(testing, html, is.ValueContaining(`>barb`))
+	AssertThat(testing, html, is.ValueContaining(`<th class="key">faff</th>`))
+	AssertThat(testing, html, is.ValueContaining(`"interestingGiven">flap`))
 }
 
 func TestTestOutputGenerator_GenerateConcurrently(testing *testing.T) {
@@ -61,14 +65,16 @@ func fileIsConvertedToHtml() {
 
 func newSomeMap() *base.SomeMap {
 	testingT := new(base.TestMetaData)
-	return &base.SomeMap{"foo": base.NewSome(testingT,
+	some := base.NewSome(testingT,
 		"Generator Test",
 		base.NewTestMetaData("foo"),
 		"GivenWhenThen",
 		func(givens testdata.InterestingGivens) {
-
-		}),
-	}
+			givens["faff"] = "flap"
+		})
+	some.CapturedIO()["foob"] = "barb"
+	someMap := &base.SomeMap{"foo": some}
+	return someMap
 }
 
 func newPageData(someMap *base.SomeMap) *generator.PageData {
