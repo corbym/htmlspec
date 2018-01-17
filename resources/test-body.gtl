@@ -16,6 +16,9 @@
     {{if $some.TestingT.Failed}}
         <pre class='highlight results test-failed'>TEST FAILED
         {{$some.TestingT.TestOutput}}</pre>
+    {{else if $some.TestingT.Skipped}}
+        <pre class='highlight results test-not-run'>TEST SKIPPED
+        {{$some.TestingT.TestOutput}}</pre>
     {{else}}
         <pre class='highlight results test-passed'>TEST PASSED
         {{$some.TestingT.TestOutput}}</pre>
