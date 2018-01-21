@@ -68,7 +68,7 @@ func newSomeMap() *base.SomeMap {
 	some := base.NewSome(testingT,
 		"Generator Test",
 		base.NewTestMetaData("foo"),
-		"GivenWhenThen",
+		[]string{"GivenWhenThen"},
 		func(givens testdata.InterestingGivens) {
 			givens["faff"] = "flap"
 		})

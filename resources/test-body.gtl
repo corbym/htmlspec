@@ -8,8 +8,8 @@
     <div class="scenario" id="scenario_{{$some.TestingT.TestId}}">
         <a id=""></a>
         <h2>Specification</h2>
-        <pre class="highlight specification">
-        {{$some.GivenWhenThen}}</pre>
+        <pre class="highlight specification">{{range $givenWhenThen := $some.GivenWhenThen}}
+        {{$givenWhenThen}}{{end}}</pre>
 
         <h2>Test results:</h2>
 
@@ -23,8 +23,8 @@
         <pre class='highlight results test-passed'>TEST PASSED
         {{$some.TestingT.TestOutput}}</pre>
     {{end}}
-        {{template "interesting-givens" $some.InterestingGivens}}
-        {{template "captured-io" $some.CapturedIO}}
+    {{template "interesting-givens" $some.InterestingGivens}}
+    {{template "captured-io" $some.CapturedIO}}
     </div>
 </div>
 {{end}}
