@@ -3,13 +3,13 @@
     <h2>Contents</h2>
 
     <ul class="contents">
-    {{range $testName, $some := .SomeMap}}
-    {{if $some.TestingT.Failed}}
-        <li class='test-failed'><a href="#{{$some.TestingT.TestId}}">{{$some.TestTitle}}</a></li>
-    {{else if $some.TestingT.Skipped}}
-        <li class='test-not-run'><a href="#{{$some.TestingT.TestId}}">{{$some.TestTitle}}</a></li>
+    {{range $testName, $testData := .TestResults}}
+    {{if $testData.TestResult.Failed}}
+        <li class='test-failed'><a href="#{{$testData.TestResult.TestId}}">{{$testData.TestTitle}}</a></li>
+    {{else if $testData.TestResult.Skipped}}
+        <li class='test-not-run'><a href="#{{$testData.TestResult.TestId}}">{{$testData.TestTitle}}</a></li>
     {{else}}
-        <li class='test-passed'><a href="#{{$some.TestingT.TestId}}">{{$some.TestTitle}}</a></li>
+        <li class='test-passed'><a href="#{{$testData.TestResult.TestId}}">{{$testData.TestTitle}}</a></li>
     {{end}}
     {{end}}
     </ul>

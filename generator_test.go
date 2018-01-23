@@ -3,9 +3,7 @@ package htmlspec_test
 import (
 	"github.com/corbym/gocrest/is"
 	. "github.com/corbym/gocrest/then"
-	"github.com/corbym/gogiven/base"
 	"github.com/corbym/gogiven/generator"
-	"github.com/corbym/gogiven/testdata"
 	"github.com/corbym/htmlspec"
 	"testing"
 )
@@ -23,9 +21,9 @@ func TestTestOutputGenerator_Generate(testing *testing.T) {
 	AssertThat(testing, html, is.ValueContaining("<title>Generator Test</title>"))
 	AssertThat(testing, html, is.ValueContaining("<h1>Generator Test</h1>"))
 	AssertThat(testing, html, is.ValueContaining(`<pre class="highlight specification">`))
-	AssertThat(testing, html, is.ValueContaining("Given"))
-	AssertThat(testing, html, is.ValueContaining("When"))
-	AssertThat(testing, html, is.ValueContaining("Then"))
+	AssertThat(testing, html, is.ValueContaining("given"))
+	AssertThat(testing, html, is.ValueContaining("when"))
+	AssertThat(testing, html, is.ValueContaining("then"))
 	AssertThat(testing, html, is.ValueContaining("</pre>"))
 	AssertThat(testing, html, is.ValueContaining(`logkey="foob">`))
 	AssertThat(testing, html, is.ValueContaining(`>barb`))
@@ -36,7 +34,7 @@ func TestTestOutputGenerator_Generate(testing *testing.T) {
 func TestTestOutputGenerator_GenerateConcurrently(testing *testing.T) {
 	for i := 0; i < 15; i++ {
 		go func() {
-			data := newPageData(newSomeMap())
+			data := newPageData(false, false)
 
 			html := underTest.Generate(data)
 			AssertThat(testing, html, is.ValueContaining("<title>Generator Test</title>"))
@@ -53,33 +51,34 @@ func TestTestOutputGenerator_Panics(t *testing.T) {
 		recovered := recover()
 		AssertThat(t, recovered, is.Not(is.Nil()))
 	}()
-	data := newPageData(newSomeMap())
-	data.SomeMap = nil
 
-	underTest.Generate(data)
+	underTest.Generate(nil)
 }
 
 func fileIsConvertedToHtml() {
-	html = underTest.Generate(newPageData(newSomeMap()))
+	html = underTest.Generate(newPageData(true, true))
 }
 
-func newSomeMap() *base.SomeMap {
-	testingT := new(base.TestMetaData)
-	some := base.NewSome(testingT,
-		"Generator Test",
-		base.NewTestMetaData("foo"),
-		[]string{"GivenWhenThen"},
-		func(givens testdata.InterestingGivens) {
-			givens["faff"] = "flap"
-		})
-	some.CapturedIO()["foob"] = "barb"
-	someMap := &base.SomeMap{"foo": some}
-	return someMap
-}
-
-func newPageData(someMap *base.SomeMap) *generator.PageData {
+func newPageData(skipped bool, failed bool) *generator.PageData {
+	testData := make(map[string]*generator.TestData)
+	capturedIO := make(map[interface{}]interface{})
+	capturedIO["foob"] = "barb"
+	interestingGivens := make(map[interface{}]interface{})
+	interestingGivens["faff"] = "flap"
+	testData["test title"] = &generator.TestData{
+		TestTitle:         "test title",
+		GivenWhenThen:     []string{"given", "when", "then"},
+		CapturedIO:        capturedIO,
+		InterestingGivens: interestingGivens,
+		TestResult: &generator.TestResult{
+			Failed:     failed,
+			Skipped:    skipped,
+			TestOutput: "well arighty then",
+			TestId:     "abc2124",
+		},
+	}
 	return &generator.PageData{
-		Title:   "Generator Test",
-		SomeMap: someMap,
+		TestResults: testData,
+		Title:       "Generator Test",
 	}
 }

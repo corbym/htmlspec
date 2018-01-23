@@ -1,30 +1,30 @@
 {{define "test-body"}}
-{{range $testName, $some := .SomeMap}}
+{{range $testName, $testData := .TestResults}}
 <div class="testmethod">
-    <a id="{{$some.TestingT.TestId}}"></a>
-    <h2>{{$some.TestTitle}}</h2>
+    <a id="{{$testData.TestResult.TestId}}"></a>
+    <h2>{{$testData.TestTitle}}</h2>
 
 
-    <div class="scenario" id="scenario_{{$some.TestingT.TestId}}">
+    <div class="scenario" id="scenario_{{$testData.TestResult.TestId}}">
         <a id=""></a>
         <h2>Specification</h2>
-        <pre class="highlight specification">{{range $givenWhenThen := $some.GivenWhenThen}}
+        <pre class="highlight specification">{{range $givenWhenThen := $testData.GivenWhenThen}}
         {{$givenWhenThen}}{{end}}</pre>
 
         <h2>Test results:</h2>
 
-    {{if $some.TestingT.Failed}}
+    {{if $testData.TestResult.Failed}}
         <pre class='highlight results test-failed'>TEST FAILED
-        {{$some.TestingT.TestOutput}}</pre>
-    {{else if $some.TestingT.Skipped}}
+        {{$testData.TestResult.TestOutput}}</pre>
+    {{else if $testData.TestResult.Skipped}}
         <pre class='highlight results test-not-run'>TEST SKIPPED
-        {{$some.TestingT.TestOutput}}</pre>
+        {{$testData.TestResult.TestOutput}}</pre>
     {{else}}
         <pre class='highlight results test-passed'>TEST PASSED
-        {{$some.TestingT.TestOutput}}</pre>
+        {{$testData.TestResult.TestOutput}}</pre>
     {{end}}
-    {{template "interesting-givens" $some.InterestingGivens}}
-    {{template "captured-io" $some.CapturedIO}}
+    {{template "interesting-givens" $testData.InterestingGivens}}
+    {{template "captured-io" $testData.CapturedIO}}
     </div>
 </div>
 {{end}}
