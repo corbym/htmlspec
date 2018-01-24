@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
+	"io"
 )
 
 const goPathEnvKey = "GOPATH"
@@ -36,18 +37,18 @@ func NewTestOutputGenerator() *TestOutputGenerator {
 }
 
 // FileExtension for the output generated.
-func (outputGenerator *TestOutputGenerator) FileExtension() string {
-	return ".html"
+func (outputGenerator *TestOutputGenerator) ContentType() string {
+	return "text/html"
 }
 
 // Generate generates html output for a test. The return string contains the html
 // that goes into the output file generated in gogivens.GenerateTestOutput().
 // The function panics if the template cannot be generated.
-func (outputGenerator *TestOutputGenerator) Generate(pageData *generator.PageData) string {
+func (outputGenerator *TestOutputGenerator) Generate(pageData *generator.PageData) io.Reader {
 	var buffer = new(bytes.Buffer)
 	err := outputGenerator.template.ExecuteTemplate(buffer, baseTemplateName, pageData)
 	if err != nil {
 		panic(err.Error())
 	}
-	return buffer.String()
+	return buffer
 }

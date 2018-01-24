@@ -6,6 +6,7 @@ import (
 	"github.com/corbym/gogiven/generator"
 	"github.com/corbym/htmlspec"
 	"testing"
+	"bytes"
 )
 
 var html string
@@ -43,7 +44,7 @@ func TestTestOutputGenerator_GenerateConcurrently(testing *testing.T) {
 }
 
 func TestTestOutputGenerator_FileExtension(t *testing.T) {
-	AssertThat(t, underTest.FileExtension(), is.EqualTo(".html"))
+	AssertThat(t, underTest.ContentType(), is.EqualTo("text/html"))
 }
 
 func TestTestOutputGenerator_Panics(t *testing.T) {
@@ -56,7 +57,9 @@ func TestTestOutputGenerator_Panics(t *testing.T) {
 }
 
 func fileIsConvertedToHtml() {
-	html = underTest.Generate(newPageData(true, true))
+	buffer := new(bytes.Buffer)
+	buffer.ReadFrom(underTest.Generate(newPageData(true, true)))
+	html = buffer.String()
 }
 
 func newPageData(skipped bool, failed bool) *generator.PageData {
