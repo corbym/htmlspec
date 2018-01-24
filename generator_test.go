@@ -37,7 +37,10 @@ func TestTestOutputGenerator_GenerateConcurrently(testing *testing.T) {
 		go func() {
 			data := newPageData(false, false)
 
-			html := underTest.Generate(data)
+			buffer := new(bytes.Buffer)
+			buffer.ReadFrom(underTest.Generate(data))
+			html = buffer.String()
+
 			AssertThat(testing, html, is.ValueContaining("<title>Generator Test</title>"))
 		}()
 	}
