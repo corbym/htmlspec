@@ -3,13 +3,11 @@
 <div class="testmethod">
     <a id="{{$testData.TestResult.TestId}}"></a>
     <h2>{{$testData.TestTitle}}</h2>
-
-
+    {{range $comment := $testData.ParsedTestContent.Comment}}<p>{{$comment}}</p>{{end}}
     <div class="scenario" id="scenario_{{$testData.TestResult.TestId}}">
         <a id=""></a>
         <h2>Specification</h2>
-    <p>{{range $comment := $testData.ParsedTestContent.Comment}}
-    {{$comment}}</p>{{end}}
+
         <pre class="highlight specification">{{range $givenWhenThen := $testData.ParsedTestContent.GivenWhenThen}}
         {{$givenWhenThen}}{{end}}</pre>
 
