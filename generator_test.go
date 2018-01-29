@@ -7,6 +7,7 @@ import (
 	"github.com/corbym/htmlspec"
 	"testing"
 	"bytes"
+	"github.com/corbym/gogiven/base"
 )
 
 var html string
@@ -22,6 +23,8 @@ func TestTestOutputGenerator_Generate(testing *testing.T) {
 	AssertThat(testing, html, is.ValueContaining("<title>Generator Test</title>"))
 	AssertThat(testing, html, is.ValueContaining("<h1>Generator Test</h1>"))
 	AssertThat(testing, html, is.ValueContaining(`<pre class="highlight specification">`))
+	AssertThat(testing, html, is.ValueContaining(`Fooing is best`))
+	AssertThat(testing, html, is.ValueContaining(`done with friends`))
 	AssertThat(testing, html, is.ValueContaining("given"))
 	AssertThat(testing, html, is.ValueContaining("when"))
 	AssertThat(testing, html, is.ValueContaining("then"))
@@ -71,9 +74,13 @@ func newPageData(skipped bool, failed bool) *generator.PageData {
 	capturedIO["foob"] = "barb"
 	interestingGivens := make(map[interface{}]interface{})
 	interestingGivens["faff"] = "flap"
+	parsedContent := base.ParsedTestContent{
+		GivenWhenThen: []string{"given", "when", "then"},
+		Comment:       []string {"Fooing is best", "done with friends"},
+	}
 	testData["test title"] = &generator.TestData{
 		TestTitle:         "test title",
-		GivenWhenThen:     []string{"given", "when", "then"},
+		ParsedTestContent: parsedContent,
 		CapturedIO:        capturedIO,
 		InterestingGivens: interestingGivens,
 		TestResult: &generator.TestResult{
