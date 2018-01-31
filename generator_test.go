@@ -18,7 +18,7 @@ func init() {
 }
 
 func TestTestOutputGenerator_Generate(testing *testing.T) {
-	fileIsConvertedToHtml()
+	fileIsConvertedToHTML()
 
 	AssertThat(testing, html, is.ValueContaining("<title>Generator Test</title>"))
 	AssertThat(testing, html, is.ValueContaining("<h1>Generator Test</h1>"))
@@ -52,7 +52,7 @@ func TestTestOutputGenerator_FileExtension(t *testing.T) {
 	AssertThat(t, underTest.ContentType(), is.EqualTo("text/html"))
 }
 
-func fileIsConvertedToHtml() {
+func fileIsConvertedToHTML() {
 	buffer := new(bytes.Buffer)
 	buffer.ReadFrom(underTest.Generate(newPageData(true, true)))
 	html = buffer.String()

@@ -36,7 +36,7 @@ func NewTestOutputGenerator() *TestOutputGenerator {
 	return outputGenerator
 }
 
-// FileExtension for the output generated.
+// ContentType for the output generated.
 func (outputGenerator *TestOutputGenerator) ContentType() string {
 	return "text/html"
 }
