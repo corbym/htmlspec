@@ -1,6 +1,7 @@
 package htmlspec
 
 import (
+	"strings"
 	"bytes"
 	"github.com/corbym/gogiven/generator"
 	"html/template"
@@ -17,7 +18,8 @@ const baseTemplateName = "base"
 // test. It is thread safe between goroutines.
 type TestOutputGenerator struct {
 	generator.GoGivensOutputGenerator
-	template *template.Template
+	template       *template.Template
+	generatedPages map[string]generator.PageData
 }
 
 //NewTestOutputGenerator creates a template that is used to generate the html output.
@@ -33,6 +35,7 @@ func NewTestOutputGenerator() *TestOutputGenerator {
 		filepath.Join(goPath, resourcesPath+"contents.gtl"),
 		filepath.Join(goPath, resourcesPath+"javascript.gtl"),
 	))
+	outputGenerator.generatedPages = make(map[string]generator.PageData, 10)
 	return outputGenerator
 }
 
@@ -47,5 +50,16 @@ func (outputGenerator *TestOutputGenerator) ContentType() string {
 func (outputGenerator *TestOutputGenerator) Generate(pageData generator.PageData) io.Reader {
 	var buffer = new(bytes.Buffer)
 	outputGenerator.template.ExecuteTemplate(buffer, baseTemplateName, pageData)
+	outputGenerator.generatedPages[pageData.Title] = pageData //spike to see if this works
+
 	return buffer
+}
+
+//GenerateIndex generates an index of all the data from the tests in HTML format.
+func (outputGenerator *TestOutputGenerator) GenerateIndex() io.Reader {
+	var content string
+	for _, page := range outputGenerator.generatedPages {
+		content += page.Title + "<BR>"
+	}
+	return strings.NewReader(content)
 }
