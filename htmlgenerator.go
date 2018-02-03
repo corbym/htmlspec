@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"github.com/corbym/gogiven/generator"
 	"html/template"
-	"os"
-	"path/filepath"
 	"io"
 )
 
@@ -20,20 +18,30 @@ type TestOutputGenerator struct {
 	template *template.Template
 }
 
+var lastError error
 //NewTestOutputGenerator creates a template that is used to generate the html output.
 func NewTestOutputGenerator() *TestOutputGenerator {
-	goPath := os.Getenv(goPathEnvKey)
 	outputGenerator := new(TestOutputGenerator)
-	outputGenerator.template = template.Must(template.ParseFiles(
-		filepath.Join(goPath, resourcesPath+"htmltemplate.gtl"),
-		filepath.Join(goPath, resourcesPath+"interestinggivens.gtl"),
-		filepath.Join(goPath, resourcesPath+"capturedio.gtl"),
-		filepath.Join(goPath, resourcesPath+"style.gtl"),
-		filepath.Join(goPath, resourcesPath+"test-body.gtl"),
-		filepath.Join(goPath, resourcesPath+"contents.gtl"),
-		filepath.Join(goPath, resourcesPath+"javascript.gtl"),
-	))
+	template := template.New(baseTemplateName)
+	template.Parse(safeStringConverter(Asset("resources/htmltemplate.gtl")))
+	template.Parse(safeStringConverter(Asset("resources/interestinggivens.gtl")))
+	template.Parse(safeStringConverter(Asset("resources/capturedio.gtl")))
+	template.Parse(safeStringConverter(Asset("resources/style.gtl")))
+	template.Parse(safeStringConverter(Asset("resources/test-body.gtl")))
+	template.Parse(safeStringConverter(Asset("resources/contents.gtl")))
+	template.Parse(safeStringConverter(Asset("resources/javascript.gtl")))
+
+	if lastError != nil {
+		panic(lastError.Error())
+	}
+	outputGenerator.template = template
 	return outputGenerator
+}
+func safeStringConverter(asset []byte, err error) string {
+	if err != nil {
+		lastError = err
+	}
+	return string(asset[:])
 }
 
 // ContentType for the output generated.
@@ -47,5 +55,6 @@ func (outputGenerator *TestOutputGenerator) ContentType() string {
 func (outputGenerator *TestOutputGenerator) Generate(pageData generator.PageData) io.Reader {
 	var buffer = new(bytes.Buffer)
 	outputGenerator.template.ExecuteTemplate(buffer, baseTemplateName, pageData)
+
 	return buffer
 }
