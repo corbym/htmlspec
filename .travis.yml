@@ -4,7 +4,9 @@ go:
   - 1.9.x
   - master
 before_install:
+  - go get -u github.com/jteeuwen/go-bindata/...
   - go get github.com/mattn/goveralls
+  - go-bindata -pkg htmlspec ./resources
 script:
   - $GOPATH/bin/goveralls -service=travis-ci -race
 matrix:
