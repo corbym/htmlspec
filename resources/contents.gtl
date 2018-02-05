@@ -3,7 +3,7 @@
     <h2>Contents</h2>
 
     <ul class="contents">
-    {{range $testName, $testData := .TestResults}}
+    {{range $testData := .TestData}}
     {{if $testData.TestResult.Failed}}
         <li class='test-failed'><a href="#{{$testData.TestResult.TestID}}">{{$testData.TestTitle}}</a></li>
     {{else if $testData.TestResult.Skipped}}
