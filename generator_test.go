@@ -12,10 +12,10 @@ import (
 
 var html string
 
-var underTest *htmlspec.TestOutputGenerator
+var underTest *htmlspec.HTMLOutputGenerator
 
 func init() {
-	underTest = htmlspec.NewTestOutputGenerator()
+	underTest = htmlspec.NewHTMLOutputGenerator()
 }
 func TestTestOutputGenerator_Generate(testing *testing.T) {
 	fileIsConvertedToHTML()
@@ -51,25 +51,24 @@ func TestTestOutputGenerator_FileExtension(t *testing.T) {
 }
 
 func TestTestOutputGenerator_GenerateIndex(t *testing.T) {
-	t.Skipf("WIP")
-	testData := make([] generator.TestData, 2)
+	var testData [] generator.TestData
 	testData = append(testData, newTestData("First", "abc2124", true, false))
 	testData = append(testData, newTestData("Second", "abc2443", true, false))
 
 	someIndexData := []generator.IndexData{
-		{Title: "Wombat Test", TestFileName: "/bar/baz/wombat_test.go", TestData: testData},
-		{Title: "Normal Bat Test", TestFileName: "/bar/baz/bat_test.go", TestData: testData},
+		{Title: "Wombat Test", Ref: "/bar/baz/wombat_test.html", TestData: testData},
+		{Title: "Normal Bat Test", Ref: "/bar/baz/bat_test.html", TestData: testData},
 	}
 	generatedIndex := generateIndexData(someIndexData)
 
-	AssertThat(t, generatedIndex, is.ValueContaining("<title>Package Name</title>"))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="./wombat_test.html" class="">Wombat Test`))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="./wombat_bat_test.html#abc2124" class="">First`))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="./wombat_bat_test.html#abc2443" class="">Second`))
+	AssertThat(t, generatedIndex, is.ValueContaining("<title>Index</title>"))
+	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/wombat_test.html#">Wombat Test`))
+	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/wombat_test.html#abc2124">First</a>`))
+	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/wombat_test.html#abc2443">Second`))
 
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="./wombat_test.html">Normal Bat Test`))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="./bat_test.html#abc2124" class="">First`))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="./bat_test.html#abc2443" class="">Second`))
+	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/bat_test.html#">Normal Bat Test`))
+	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/bat_test.html#abc2124">First`))
+	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/bat_test.html#abc2443">Second`))
 }
 
 func generateData(data generator.PageData) *bytes.Buffer {

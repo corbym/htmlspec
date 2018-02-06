@@ -1,27 +1,41 @@
 package htmlspec
 
 import (
-	"strings"
 	"bytes"
 	"github.com/corbym/gogiven/generator"
 	"html/template"
 	"io"
+	"fmt"
 )
 
 const baseTemplateName = "base"
+const indexTemplateName = "index"
 
-//TestOutputGenerator is an implementation of the GoGivensOutputGenerator that generates an html file per
+//HTMLOutputGenerator is an implementation of the GoGivensOutputGenerator that generates an html file per
 // test. It is thread safe between goroutines.
-type TestOutputGenerator struct {
+type HTMLOutputGenerator struct {
 	generator.GoGivensOutputGenerator
-	template *template.Template
+	htmlTemplate  *template.Template
+	indexTemplate *template.Template
 }
 
 var lastError error
 
-//NewTestOutputGenerator creates a template that is used to generate the html output.
-func NewTestOutputGenerator() *TestOutputGenerator {
-	outputGenerator := new(TestOutputGenerator)
+//NewTestOutputGenerator creates a htmlTemplate that is used to generate the html output.
+func NewHTMLOutputGenerator() *HTMLOutputGenerator {
+	outputGenerator := new(HTMLOutputGenerator)
+	htmlTemplate := parseHTMLTemplate()
+	indexTemplate := parseIndexTemplate()
+
+	if lastError != nil {
+		panic(lastError.Error())
+	}
+	outputGenerator.htmlTemplate = htmlTemplate
+	outputGenerator.indexTemplate = indexTemplate
+	return outputGenerator
+}
+
+func parseHTMLTemplate() *template.Template {
 	htmlTemplate := template.New(baseTemplateName)
 	htmlTemplate.Parse(safeStringConverter(Asset("resources/htmltemplate.gtl")))
 	htmlTemplate.Parse(safeStringConverter(Asset("resources/interestinggivens.gtl")))
@@ -30,12 +44,18 @@ func NewTestOutputGenerator() *TestOutputGenerator {
 	htmlTemplate.Parse(safeStringConverter(Asset("resources/test-body.gtl")))
 	htmlTemplate.Parse(safeStringConverter(Asset("resources/contents.gtl")))
 	htmlTemplate.Parse(safeStringConverter(Asset("resources/javascript.gtl")))
+	fmt.Printf("loaded html templates%s\n", htmlTemplate.DefinedTemplates())
+	return htmlTemplate
+}
 
-	if lastError != nil {
-		panic(lastError.Error())
-	}
-	outputGenerator.template = htmlTemplate
-	return outputGenerator
+func parseIndexTemplate() *template.Template {
+	indexTemplate := template.New(indexTemplateName)
+	indexTemplate.Parse(safeStringConverter(Asset("resources/javascript.gtl")))
+	indexTemplate.Parse(safeStringConverter(Asset("resources/index-content.gtl")))
+	indexTemplate.Parse(safeStringConverter(Asset("resources/style.gtl")))
+	indexTemplate.Parse(safeStringConverter(Asset("resources/index.gtl")))
+	fmt.Printf("loaded index templates%s\n", indexTemplate.DefinedTemplates())
+	return indexTemplate
 }
 
 func safeStringConverter(asset []byte, err error) string {
@@ -46,24 +66,22 @@ func safeStringConverter(asset []byte, err error) string {
 }
 
 // ContentType for the output generated.
-func (outputGenerator *TestOutputGenerator) ContentType() string {
+func (outputGenerator *HTMLOutputGenerator) ContentType() string {
 	return "text/html"
 }
 
 // Generate generates html output for a test. The return string contains the html
 // that goes into the output generated in gogivens.GenerateTestOutput().
-// The function panics if the template cannot be generated.
-func (outputGenerator *TestOutputGenerator) Generate(pageData generator.PageData) (io.Reader) {
+// The function panics if the htmlTemplate cannot be generated.
+func (outputGenerator *HTMLOutputGenerator) Generate(pageData generator.PageData) (io.Reader) {
 	var buffer = new(bytes.Buffer)
-	outputGenerator.template.ExecuteTemplate(buffer, baseTemplateName, pageData)
+	outputGenerator.htmlTemplate.ExecuteTemplate(buffer, baseTemplateName, pageData)
 	return buffer
 }
 
 //GenerateIndex generates an index of all the data from the tests in HTML format.
-func (outputGenerator *TestOutputGenerator) GenerateIndex(indexData []generator.IndexData) io.Reader {
-	var content string
-	for _, idx := range indexData {
-		content += idx.Title + "<BR>"
-	}
-	return strings.NewReader(content)
+func (outputGenerator *HTMLOutputGenerator) GenerateIndex(indexData []generator.IndexData) io.Reader {
+	var buffer = new(bytes.Buffer)
+	outputGenerator.indexTemplate.ExecuteTemplate(buffer, indexTemplateName, indexData)
+	return buffer
 }
