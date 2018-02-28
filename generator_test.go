@@ -62,13 +62,39 @@ func TestTestOutputGenerator_GenerateIndex(t *testing.T) {
 	generatedIndex := generateIndexData(someIndexData)
 
 	AssertThat(t, generatedIndex, is.ValueContaining("<title>Index</title>"))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/wombat_test.html#">Wombat Test`))
+	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/wombat_test.html">Wombat Test`))
 	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/wombat_test.html#abc2124">First</a>`))
 	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/wombat_test.html#abc2443">Second`))
 
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/bat_test.html#">Normal Bat Test`))
+	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/bat_test.html">Normal Bat Test`))
 	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/bat_test.html#abc2124">First`))
 	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/bat_test.html#abc2443">Second`))
+}
+
+func TestTestOutputGenerator_GenerateIndex_OverallPass(t *testing.T) {
+	var testData [] generator.TestData
+
+	testData = append(testData, newTestData("First", "abc2124", false, false))
+
+	someIndexData := []generator.IndexData{
+		{Title: "Wombat Test", Ref: "/bar/baz/wombat_test.html", TestData: testData},
+	}
+	generatedIndex := generateIndexData(someIndexData)
+
+	AssertThat(t, generatedIndex, is.ValueContaining(`<dl class="test-passed index-result">`))
+}
+
+func TestTestOutputGenerator_GenerateIndex_OverallFailed(t *testing.T) {
+	var testData [] generator.TestData
+
+	testData = append(testData, newTestData("First", "abc2124", true, true))
+
+	someIndexData := []generator.IndexData{
+		{Title: "Wombat Test", Ref: "/bar/baz/wombat_test.html", TestData: testData},
+	}
+	generatedIndex := generateIndexData(someIndexData)
+
+	AssertThat(t, generatedIndex, is.ValueContaining(`<dl class="test-failed index-result">`))
 }
 
 func generateData(data generator.PageData) *bytes.Buffer {

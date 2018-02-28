@@ -4,7 +4,8 @@
 
     <div class="contents">
     {{range $indexData := .}}
-        <dl class="test-failed index-result">
+        {{$overallResult := OverallTestResult $indexData.TestData}}
+        <dl class="{{$overallResult}} index-result">
             <dt><a href="{{$indexData.Ref}}">{{$indexData.Title}}</a></dt>
         {{range $testData := .TestData}}
             {{if $testData.TestResult.Failed}}

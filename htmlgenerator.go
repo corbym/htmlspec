@@ -50,6 +50,7 @@ func parseHTMLTemplate() *template.Template {
 
 func parseIndexTemplate() *template.Template {
 	indexTemplate := template.New(indexTemplateName)
+	indexTemplate.Funcs(template.FuncMap{"OverallTestResult": OverallTestResult})
 	indexTemplate.Parse(safeStringConverter(Asset("resources/javascript.gtl")))
 	indexTemplate.Parse(safeStringConverter(Asset("resources/index-content.gtl")))
 	indexTemplate.Parse(safeStringConverter(Asset("resources/style.gtl")))
@@ -82,6 +83,18 @@ func (outputGenerator *HTMLOutputGenerator) Generate(pageData generator.PageData
 //GenerateIndex generates an index of all the data from the tests in HTML format.
 func (outputGenerator *HTMLOutputGenerator) GenerateIndex(indexData []generator.IndexData) io.Reader {
 	var buffer = new(bytes.Buffer)
-	outputGenerator.indexTemplate.ExecuteTemplate(buffer, indexTemplateName, indexData)
+	err := outputGenerator.indexTemplate.ExecuteTemplate(buffer, indexTemplateName, indexData)
+	if err != nil {
+		panic(err.Error())
+	}
 	return buffer
+}
+
+func OverallTestResult(testData []generator.TestData) string {
+	for _, data := range testData {
+		if data.TestResult.Failed {
+			return "test-failed"
+		}
+	}
+	return "test-passed"
 }
