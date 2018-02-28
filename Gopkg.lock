@@ -11,7 +11,7 @@
   branch = "proto-indexing-test"
   name = "github.com/corbym/gogiven"
   packages = ["base","generator","testdata"]
-  revision = "da5a7a4f1df8b3759f81ea120c14459f1994db5c"
+  revision = "290cad6930d97887d3acfa54caf1206f53e14391"
 
 [[projects]]
   branch = "master"
