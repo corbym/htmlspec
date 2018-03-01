@@ -7,6 +7,8 @@ before_install:
   - go get -u github.com/jteeuwen/go-bindata/...
   - go get github.com/mattn/goveralls
   - go-bindata -pkg htmlspec ./resources
+  - go get -u github.com/golang/dep/cmd/dep
+  - dep ensure
 script:
   - $GOPATH/bin/goveralls -service=travis-ci -race
 matrix:

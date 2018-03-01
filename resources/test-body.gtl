@@ -1,5 +1,5 @@
 {{define "test-body"}}
-{{range $testName, $testData := .TestResults}}
+{{range $testData := .TestData}}
 <div class="testmethod">
     <a id="{{$testData.TestResult.TestID}}"></a>
     <h2>{{$testData.TestTitle}}</h2>
