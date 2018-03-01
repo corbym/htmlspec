@@ -34,6 +34,12 @@ func NewHTMLOutputGenerator() *HTMLOutputGenerator {
 	outputGenerator.indexTemplate = indexTemplate
 	return outputGenerator
 }
+func safeStringConverter(asset []byte, err error) string {
+	if err != nil {
+		lastError = err
+	}
+	return string(asset[:])
+}
 
 func parseHTMLTemplate() *template.Template {
 	htmlTemplate := template.New(baseTemplateName)
