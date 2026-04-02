@@ -1,14 +1,17 @@
 {{define "interesting-givens"}}
-
-<h3 class="logKey">Interesting Givens</h3>
-
-<table class="interestingGivens logValue">
-    {{range $key, $value := . }}
-    <tr>
-        <th class="key">{{$key}}</th>
-        <td class="interestingGiven">{{$value}}</td>
-    </tr>
-    {{end}}
-</table>
-
+{{if .}}
+<details class="log-section" open>
+    <summary>Interesting Givens</summary>
+    <div class="log-body">
+        <table class="interestingGivens-table">
+            {{range $key, $value := .}}
+            <tr>
+                <th class="key">{{$key}}</th>
+                <td class="interestingGiven">{{$value}}</td>
+            </tr>
+            {{end}}
+        </table>
+    </div>
+</details>
+{{end}}
 {{end}}

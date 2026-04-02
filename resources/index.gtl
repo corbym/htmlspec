@@ -1,21 +1,24 @@
 {{define "index"}}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Index</title>
-
-{{template "javascript" .}}
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test Report Index</title>
 {{template "style" .}}
-
 </head>
 <body>
-
-<h1>Index</h1>
-
+    <header class="site-header">
+        <div class="site-header__inner">
+            <span class="site-header__title">Test Report</span>
+        </div>
+    </header>
+    <div class="layout layout--index">
+        <main class="main-content">
 {{template "contents" .}}
-
+        </main>
+    </div>
+{{template "javascript" .}}
 </body>
 </html>
 {{end}}
