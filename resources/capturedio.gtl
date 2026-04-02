@@ -1,7 +1,8 @@
 {{define "captured-io"}}
-
-{{range $key, $value := . }}
-<h3 class="logKey" logkey="{{$key}}">{{$key}}</h3>
-<div class="logValue highlight xml WebResource">{{$value}}</div>
+{{range $key, $value := .}}
+<details class="log-section">
+    <summary>{{$key}}</summary>
+    <div class="log-body highlight xml WebResource">{{$value}}</div>
+</details>
 {{end}}
 {{end}}

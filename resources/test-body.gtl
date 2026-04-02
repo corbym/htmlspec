@@ -2,29 +2,35 @@
 {{range $testData := .TestData}}
 <div class="testmethod">
     <a id="{{$testData.TestResult.TestID}}"></a>
-    <h2>{{$testData.TestTitle}}</h2>
-    {{range $comment := $testData.ParsedTestContent.Comment}}<p>{{$comment}}</p>{{end}}
+    <h2 class="testmethod__title">
+        {{$testData.TestTitle}}
+        {{if $testData.TestResult.Failed}}
+            <span class="badge badge--failed">Failed</span>
+        {{else if $testData.TestResult.Skipped}}
+            <span class="badge badge--skipped">Skipped</span>
+        {{else}}
+            <span class="badge badge--passed">Passed</span>
+        {{end}}
+    </h2>
+    {{range $comment := $testData.ParsedTestContent.Comment}}<p class="testmethod__comment">{{$comment}}</p>{{end}}
     <div class="scenario" id="scenario_{{$testData.TestResult.TestID}}">
-        <a id=""></a>
-        <h2>Specification</h2>
-
+        <p class="scenario__section-label">Specification</p>
         <pre class="highlight specification">{{range $givenWhenThen := $testData.ParsedTestContent.GivenWhenThen}}
         {{$givenWhenThen}}{{end}}</pre>
 
-        <h2>Test results:</h2>
-
-    {{if $testData.TestResult.Failed}}
-        <pre class='highlight results test-failed'>TEST FAILED
+        <p class="scenario__section-label">Test Result</p>
+        {{if $testData.TestResult.Failed}}
+            <pre class="highlight results test-failed">TEST FAILED
         {{$testData.TestResult.TestOutput}}</pre>
-    {{else if $testData.TestResult.Skipped}}
-        <pre class='highlight results test-not-run'>TEST SKIPPED
+        {{else if $testData.TestResult.Skipped}}
+            <pre class="highlight results test-not-run">TEST SKIPPED
         {{$testData.TestResult.TestOutput}}</pre>
-    {{else}}
-        <pre class='highlight results test-passed'>TEST PASSED
+        {{else}}
+            <pre class="highlight results test-passed">TEST PASSED
         {{$testData.TestResult.TestOutput}}</pre>
-    {{end}}
-    {{template "interesting-givens" $testData.InterestingGivens}}
-    {{template "captured-io" $testData.CapturedIO}}
+        {{end}}
+        {{template "interesting-givens" $testData.InterestingGivens}}
+        {{template "captured-io" $testData.CapturedIO}}
     </div>
 </div>
 {{end}}
