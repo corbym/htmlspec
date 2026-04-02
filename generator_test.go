@@ -20,19 +20,19 @@ func init() {
 func TestTestOutputGenerator_Generate(testing *testing.T) {
 	fileIsConvertedToHTML()
 
-	AssertThat(testing, html, is.ValueContaining("<title>Head Generator Test Title</title>"))
-	AssertThat(testing, html, is.ValueContaining("<h1>Head Generator Test Title</h1>"))
-	AssertThat(testing, html, is.ValueContaining(`<pre class="highlight specification">`))
-	AssertThat(testing, html, is.ValueContaining(`Fooing is best`))
-	AssertThat(testing, html, is.ValueContaining(`done with friends`))
-	AssertThat(testing, html, is.ValueContaining("given"))
-	AssertThat(testing, html, is.ValueContaining("when"))
-	AssertThat(testing, html, is.ValueContaining("then"))
-	AssertThat(testing, html, is.ValueContaining("</pre>"))
-	AssertThat(testing, html, is.ValueContaining(`logkey="foob">`))
-	AssertThat(testing, html, is.ValueContaining(`>barb`))
-	AssertThat(testing, html, is.ValueContaining(`<th class="key">faff</th>`))
-	AssertThat(testing, html, is.ValueContaining(`"interestingGiven">flap`))
+	AssertThat(testing, html, is.StringContaining("<title>Head Generator Test Title</title>"))
+	AssertThat(testing, html, is.StringContaining(`<span class="site-header__title">Head Generator Test Title</span>`))
+	AssertThat(testing, html, is.StringContaining(`<pre class="highlight specification">`))
+	AssertThat(testing, html, is.StringContaining(`Fooing is best`))
+	AssertThat(testing, html, is.StringContaining(`done with friends`))
+	AssertThat(testing, html, is.StringContaining("given"))
+	AssertThat(testing, html, is.StringContaining("when"))
+	AssertThat(testing, html, is.StringContaining("then"))
+	AssertThat(testing, html, is.StringContaining("</pre>"))
+	AssertThat(testing, html, is.StringContaining(`<summary>foob</summary>`))
+	AssertThat(testing, html, is.StringContaining(`>barb`))
+	AssertThat(testing, html, is.StringContaining(`<th class="key">faff</th>`))
+	AssertThat(testing, html, is.StringContaining(`"interestingGiven">flap`))
 }
 
 func TestTestOutputGenerator_GenerateConcurrently(testing *testing.T) {
@@ -41,7 +41,7 @@ func TestTestOutputGenerator_GenerateConcurrently(testing *testing.T) {
 		go func() {
 			buffer := generateData(data)
 
-			AssertThat(testing, buffer.String(), is.ValueContaining("<title>Head Generator Test Title</title>"))
+			AssertThat(testing, buffer.String(), is.StringContaining("<title>Head Generator Test Title</title>"))
 		}()
 	}
 }
@@ -61,14 +61,14 @@ func TestTestOutputGenerator_GenerateIndex(t *testing.T) {
 	}
 	generatedIndex := generateIndexData(someIndexData)
 
-	AssertThat(t, generatedIndex, is.ValueContaining("<title>Index</title>"))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/wombat_test.html">Wombat Test`))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/wombat_test.html#abc2124">First</a>`))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/wombat_test.html#abc2443">Second`))
+	AssertThat(t, generatedIndex, is.StringContaining("<title>Test Report Index</title>"))
+	AssertThat(t, generatedIndex, is.StringContaining(`<a href="/bar/baz/wombat_test.html">Wombat Test`))
+	AssertThat(t, generatedIndex, is.StringContaining(`<a href="/bar/baz/wombat_test.html#abc2124">First</a>`))
+	AssertThat(t, generatedIndex, is.StringContaining(`<a href="/bar/baz/wombat_test.html#abc2443">Second`))
 
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/bat_test.html">Normal Bat Test`))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/bat_test.html#abc2124">First`))
-	AssertThat(t, generatedIndex, is.ValueContaining(`<a href="/bar/baz/bat_test.html#abc2443">Second`))
+	AssertThat(t, generatedIndex, is.StringContaining(`<a href="/bar/baz/bat_test.html">Normal Bat Test`))
+	AssertThat(t, generatedIndex, is.StringContaining(`<a href="/bar/baz/bat_test.html#abc2124">First`))
+	AssertThat(t, generatedIndex, is.StringContaining(`<a href="/bar/baz/bat_test.html#abc2443">Second`))
 }
 
 func TestTestOutputGenerator_GenerateIndex_OverallPass(t *testing.T) {
@@ -81,7 +81,7 @@ func TestTestOutputGenerator_GenerateIndex_OverallPass(t *testing.T) {
 	}
 	generatedIndex := generateIndexData(someIndexData)
 
-	AssertThat(t, generatedIndex, is.ValueContaining(`<dl class="test-passed index-result">`))
+	AssertThat(t, generatedIndex, is.StringContaining(`<div class="index-card test-passed">`))
 }
 
 func TestTestOutputGenerator_GenerateIndex_OverallFailed(t *testing.T) {
@@ -94,7 +94,7 @@ func TestTestOutputGenerator_GenerateIndex_OverallFailed(t *testing.T) {
 	}
 	generatedIndex := generateIndexData(someIndexData)
 
-	AssertThat(t, generatedIndex, is.ValueContaining(`<dl class="test-failed index-result">`))
+	AssertThat(t, generatedIndex, is.StringContaining(`<div class="index-card test-failed">`))
 }
 
 func generateData(data generator.PageData) *bytes.Buffer {

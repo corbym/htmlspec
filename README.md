@@ -1,34 +1,41 @@
 # htmlspec
-[![Build status](https://travis-ci.org/corbym/htmlspec.svg?branch=master)](https://github.com/corbym/htmlspec)
-[![GoDoc](https://godoc.org/github.com/corbym/htmlspec?status.svg)](http://godoc.org/github.com/corbym/htmlspec)
+[![CI](https://github.com/corbym/htmlspec/actions/workflows/ci.yml/badge.svg)](https://github.com/corbym/htmlspec/actions/workflows/ci.yml)
+[![GoDoc](https://pkg.go.dev/badge/github.com/corbym/htmlspec.svg)](https://pkg.go.dev/github.com/corbym/htmlspec)
 [![Go Report Card](https://goreportcard.com/badge/github.com/corbym/htmlspec)](https://goreportcard.com/report/github.com/corbym/htmlspec)
-[![Coverage Status](https://coveralls.io/repos/github/corbym/htmlspec/badge.svg)](https://coveralls.io/github/corbym/htmlspec)
 
-HTML output generator for the BDD framework [GoGiven](https://github.com/corbym/gogiven)
-## Import:
+HTML output generator for the BDD framework [GoGiven](https://github.com/corbym/gogiven).
 
-```go
-import github.com/corbym/htmlspec
+Generates a responsive HTML5 report per test file, plus an index page, with pass/fail/skip status badges and collapsible sections for interesting givens and captured I/O.
+
+## Requirements
+
+Go 1.21+
+
+## Install:
+
+```
+go get github.com/corbym/htmlspec
 ```
 
 ## Usage:
 
 ```go
 package foo
+
 import (
+	"os"
 	"testing"
+
 	"github.com/corbym/gogiven"
 	"github.com/corbym/htmlspec"
-	"os"
 )
 
 func TestMain(testmain *testing.M) {
-	gogiven.Generator = htmlspec.NewTestOutputGenerator()
+	gogiven.Generator = htmlspec.NewHTMLOutputGenerator()
 	runOutput := testmain.Run()
 	gogiven.GenerateTestOutput()
 	os.Exit(runOutput)
 }
 
-... actual tests...
-
+// ... actual tests ...
 ```
