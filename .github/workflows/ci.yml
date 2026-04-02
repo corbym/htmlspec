@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      GOPATH: ${{ github.workspace }}/go
+
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/go/src/github.com/corbym/htmlspec
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.13'
+          cache: false
+
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          path: go/src/github.com/corbym/htmlspec
+
+      - name: Install dep
+        run: |
+          curl -sSL https://github.com/golang/dep/releases/download/v0.5.4/dep-linux-amd64 -o $GOPATH/bin/dep
+          chmod +x $GOPATH/bin/dep
+
+      - name: Install dependencies
+        run: dep ensure
+
+      - name: Run tests
+        run: go test -race ./...
