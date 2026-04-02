@@ -2,26 +2,45 @@
 
 
 [[projects]]
+  digest = "1:28802ba0e3a3009dae7ea1b107b960b3a40e05e408b256df994282ed2607afcf"
   name = "github.com/corbym/gocrest"
-  packages = [".","is","then"]
+  packages = [
+    ".",
+    "is",
+    "then",
+  ]
+  pruneopts = ""
   revision = "f9449d272153928bfef651d4595590953d34b611"
   version = "v1.0.3"
 
 [[projects]]
   branch = "proto-indexing-test"
+  digest = "1:319a1569cd9ee516e24705e1929aed5ef5e757fce2791ed989ee06835879d196"
   name = "github.com/corbym/gogiven"
-  packages = ["base","generator","testdata"]
+  packages = [
+    "base",
+    "generator",
+    "testdata",
+  ]
+  pruneopts = ""
   revision = "290cad6930d97887d3acfa54caf1206f53e14391"
 
 [[projects]]
   branch = "master"
+  digest = "1:23a5efa4b272df86a8ebffc942f5e0c1aac4b750836037394cc450b6d91e241a"
   name = "github.com/fatih/camelcase"
   packages = ["."]
+  pruneopts = ""
   revision = "44e46d280b43ec1531bb25252440e34f1b800b65"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9a4a31e57c71b81053f2d2fabf03ff56565d7acb686727b41a2c4f2bf7dad658"
+  input-imports = [
+    "github.com/corbym/gocrest/is",
+    "github.com/corbym/gocrest/then",
+    "github.com/corbym/gogiven/base",
+    "github.com/corbym/gogiven/generator",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
